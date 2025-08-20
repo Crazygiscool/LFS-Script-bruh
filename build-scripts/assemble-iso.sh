@@ -15,4 +15,4 @@ cp /usr/lib/grub/x86_64-efi/* "$WORK/iso/boot/grub/" 2>/dev/null || true
 sudo xorriso -as mkisofs -r -V "MyDistro" -o "$IMAGE/mydistro.iso" \
   -c boot.cat -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table "$WORK/iso"
 
-echo "ISO assembled at $IMAGE/mydistro.iso"
+echo "ISO assembled at $IMAGE/REMOVED-os.iso"

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
-ROOTFS=/workspaces/mydistro/chroot
-RELEASE=jammy
+ROOTFS=/workspaces/REMOVED-OS/chroot
+RELEASE=noble
 MIRROR=http://archive.ubuntu.com/ubuntu
 
 sudo rm -rf "$ROOTFS"
