@@ -73,14 +73,14 @@ Now you should see something like:
 
 ```txt
 sde   28.9G disk
-└─sde1 28.9G part
+└─sde 28.9G part
 ```
 
 From here, you can mount it like any normal Linux block device:
 
 ```bash
 sudo mkdir -p /mnt/usb
-sudo mount /dev/sde1 /mnt/usb
+sudo mount /dev/sde /mnt/usb
 ```
 
 ---
