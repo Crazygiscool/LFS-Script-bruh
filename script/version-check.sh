@@ -69,7 +69,7 @@ PATH=/usr/bin:/bin
  alias_check yacc Bison
  alias_check sh Bash
  echo "Compiler check:"
- if printf "int main(){}" | g++ -x c++ 
+ if g++ -x hello_world.cpp -o a.out
 then echo "OK:    g++ works";
  else echo "ERROR: g++ does NOT work"; fi
  rm -f a.out
@@ -80,4 +80,3 @@ then echo "OK:    g++ works";
  fi
  EOF
  bash version-check.sh
-
