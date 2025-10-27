@@ -23,7 +23,7 @@ cd "$srcdir"
 mkdir -v host-build && cd host-build
 ../configure --prefix=/tools \
   --with-shared --without-debug \
-  --without-normal --enable-widec \
+  --without-normal \
   --build=$(../config.guess) \
   --host=$(../config.guess) \
   --with-build-cc=$(which gcc) \
@@ -36,7 +36,7 @@ cd "$SRCROOT/$srcdir"
 mkdir -v build && cd build
 ../configure --prefix=$LFS/tools \
   --with-shared --without-debug \
-  --without-normal --enable-widec \
+  --without-normal \
   --host=$(uname -m)-lfs-linux-gnu \
   --build=$(../config.guess) \
   --with-build-cc=$(which gcc) \
