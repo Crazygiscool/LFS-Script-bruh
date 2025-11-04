@@ -3,24 +3,29 @@
 # LFS Package Fetcher with Retry, Resume, and Integrity Check
 # Author: Crazygiscool
 
-set -e
+set -euo pipefail
 
 export LFS=/mnt/lfs
 export SRCROOT=$LFS/sources
 export WGET_LIST=$SRCROOT/wget-list
+export MD5_FILE=$SRCROOT/md5sums
 export LOG=$SRCROOT/fetch.log
 export TMPLIST=$SRCROOT/fetch-temp.list
+
+# === LFS 12.4 official URLs ===
+BASE_URL="https://www.linuxfromscratch.org/lfs/downloads/12.4-systemd"
+WGET_URL="$BASE_URL/wget-list"
+MD5_URL="$BASE_URL/md5sums"
 
 echo "🌐 Starting LFS package fetch..." | tee -a "$LOG"
 date | tee -a "$LOG"
 
-# === Check prerequisites ===
-if [ ! -f "$WGET_LIST" ]; then
-  echo "❌ wget-list not found at $WGET_LIST" | tee -a "$LOG"
-  exit 1
-fi
-
 mkdir -pv "$SRCROOT"
+
+# === Always refresh wget-list and md5sums ===
+echo "⬇️ Fetching wget-list and md5sums..." | tee -a "$LOG"
+wget -O "$WGET_LIST" "$WGET_URL" 2>&1 | tee -a "$LOG"
+wget -O "$MD5_FILE" "$MD5_URL" 2>&1 | tee -a "$LOG"
 
 # === Identify missing files ===
 echo "🔍 Checking for missing packages..." | tee -a "$LOG"
@@ -47,7 +52,7 @@ else
   echo "✅ All packages already present." | tee -a "$LOG"
 fi
 
-# === Optional: Check for updates (timestamp-based) ===
+# === Timestamp check for updates ===
 echo "🔄 Checking for upstream updates..." | tee -a "$LOG"
 wget --input-file="$WGET_LIST" \
      --timestamping \
@@ -56,8 +61,7 @@ wget --input-file="$WGET_LIST" \
      --timeout=20 \
      2>&1 | tee -a "$LOG"
 
-# === Optional: Verify integrity ===
-MD5_FILE=$SRCROOT/md5sums
+# === Verify integrity ===
 if [ -f "$MD5_FILE" ]; then
   echo "🔐 Verifying checksums..." | tee -a "$LOG"
   cd "$SRCROOT"

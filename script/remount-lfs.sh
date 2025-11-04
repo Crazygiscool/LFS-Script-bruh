@@ -6,7 +6,7 @@
 set -e
 
 # === CONFIG ===
-LFS_IMG=~/LFS/lfs-disk.img
+LFS_IMG=~/lfs-disk.img
 MOUNT_POINT=/mnt/lfs
 SWAPFILE=$MOUNT_POINT/swapfile
 LOG=~/LFS/remount.log
