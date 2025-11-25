@@ -78,5 +78,4 @@ then echo "OK:    g++ works";
  else
    echo "OK: nproc reports $(nproc) logical cores are available"
  fi
- EOF
- bash version-check.sh
+ 

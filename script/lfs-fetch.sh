@@ -17,8 +17,8 @@ BASE_URL="https://www.linuxfromscratch.org/lfs/downloads/12.4-systemd"
 WGET_URL="$BASE_URL/wget-list"
 MD5_URL="$BASE_URL/md5sums"
 
-echo "🌐 Starting LFS package fetch..." | tee -a "$LOG"
-date | tee -a "$LOG"
+echo "🌐 Starting LFS package fetch..." | sudo tee -a "$LOG"
+date | sudo tee -a "$LOG"
 
 mkdir -pv "$SRCROOT"
 

@@ -24,14 +24,20 @@ if ! swapon --show | grep -q "$LFS/swapfile"; then
 fi
 
 # === Fix ownership ===
-echo "🔧 Fixing ownership of sources and logs..."
-sudo chown -R $USERNAME:$USERNAME "$SRCROOT"
-sudo chown -R $USERNAME:$USERNAME "$LOGROOT"
+echo "🔧 Ensuring sources and logs directories exist and fixing ownership..."
+# Create dirs if missing, then set ownership to $USERNAME
+sudo mkdir -pv "$SRCROOT" "$LOGROOT"
+sudo chown -R "$USERNAME:$USERNAME" "$SRCROOT" || {
+  echo "❌ Failed to chown $SRCROOT"; exit 1; }
+sudo chown -R "$USERNAME:$USERNAME" "$LOGROOT" || {
+  echo "❌ Failed to chown $LOGROOT"; exit 1; }
 
-# === Check write access ===
-touch "$SRCROOT/.write-test" && rm "$SRCROOT/.write-test" || {
-  echo "❌ Cannot write to $SRCROOT. Check permissions."
+# === Check write access as the lfs user ===
+if sudo -u "$USERNAME" bash -c "touch \"$SRCROOT/.write-test\" && rm \"$SRCROOT/.write-test\""; then
+  echo "✅ $USERNAME can write to $SRCROOT"
+else
+  echo "❌ $USERNAME cannot write to $SRCROOT. Check permissions."
   exit 1
-}
+fi
 
 echo "✅ Preflight complete. Environment is ready for build."

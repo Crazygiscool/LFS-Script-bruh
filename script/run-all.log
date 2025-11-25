@@ -1,0 +1,8 @@
+Run started: Mon Nov 24 09:40:54 PM EST 2025
+[INFO] Step 1: Running version checks
++ bash /home/crazyg/Documents/code/REMOVED-OS/script/version-check.sh
+[INFO] /mnt/lfs already mounted
+[INFO] Step 3: Preflight checks
++ bash /home/crazyg/Documents/code/REMOVED-OS/script/preflight-lfs.sh
+[INFO] Step 4: Fetching LFS sources
++ bash /home/crazyg/Documents/code/REMOVED-OS/script/lfs-fetch.sh
