@@ -11,12 +11,17 @@ MOUNT_POINT=/mnt/lfs
 SWAPFILE=$MOUNT_POINT/swapfile
 LOG=~/LFS/remount.log
 
+# === Ensure log directory exists ===
+mkdir -pv "$(dirname "$LOG")"
+
 echo "🔁 Remounting LFS..." | tee -a "$LOG"
 date | tee -a "$LOG"
 
 # === Check image exists ===
 if [ ! -f "$LFS_IMG" ]; then
   echo "❌ Disk image not found: $LFS_IMG" | tee -a "$LOG"
+  echo "ℹ️ To create the LFS loopback image, run:" | tee -a "$LOG"
+  echo "   bash $(dirname "$0")/lfs-loopback-setup.sh" | tee -a "$LOG"
   exit 1
 fi
 
