@@ -78,7 +78,7 @@ if [ -s "$TMPLIST" ]; then
     nl -ba "$REMAINING" | tee -a "$LOG"
     echo "" | tee -a "$LOG"
     echo "Manual download instructions:" | tee -a "$LOG"
-    echo "  1) For each filename in $REMAINING, fetch the file from the official mirror or alternate mirror." | tee -a "$LOG"
+    echo "  1) For each filename in $REMAINING, fetch the file from the official mirror or alternate mirror.(gnu.org)" | tee -a "$LOG"
     echo "  2) Place the files in $SRCROOT" | tee -a "$LOG"
     echo "  3) Re-run this script to continue." | tee -a "$LOG"
 
