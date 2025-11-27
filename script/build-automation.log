@@ -1,9 +1,10 @@
-=== Build Automation Started: Tue Nov 25 08:20:50 PM EST 2025 ===
+=== Build Automation Started: Thu Nov 27 01:21:35 PM EST 2025 ===
 [INFO] Step 1: Creating/verifying lfs user
 [INFO] User 'lfs' already exists (uid: 1001)
 [INFO] Sudoers file for lfs already exists
 [INFO] Step 2: /mnt/lfs already mounted (3% used)
 [INFO] Step 3: Running preflight checks
 + bash /home/crazyg/Documents/code/REMOVED-OS/script/preflight-lfs.sh
-[INFO] Step 4: Fetching LFS sources
-+ bash /home/crazyg/Documents/code/REMOVED-OS/script/lfs-fetch.sh
+[INFO] Step 4: Skipping fetch (--skip-fetch)
+[INFO] Step 5: Running auto-build (all packages in /mnt/lfs/sources)
++ bash /home/crazyg/Documents/code/REMOVED-OS/script/auto-build.sh

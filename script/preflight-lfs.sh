@@ -20,7 +20,7 @@ if ! mountpoint -q "$LFS"; then
 fi
 
 if ! swapon --show | grep -q "$LFS/swapfile"; then
-  echo "⚠️ Swapfile not active. Consider running: sudo swapon $LFS/swapfile"
+  echo "⚠️ Swapfile not active. Consider running: sudo swapon /root/lfs-swap.img"
 fi
 
 # === Fix ownership ===

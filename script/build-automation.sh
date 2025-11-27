@@ -148,25 +148,27 @@ fi
 # ============================================================================
 if ! $SKIP_LOOPBACK; then
   export LFS=/mnt/lfs
-  
+
   # Pre-checks
   check_script_exists "$SCRIPT_DIR/remount-lfs.sh"
   check_script_exists "$SCRIPT_DIR/lfs-loopback-setup.sh"
-  
+
+  LFS_IMG="/root/lfs-root.img"
+
   if check_mount_point "$LFS"; then
     info "Step 2: $LFS already mounted ($(df -h "$LFS" | tail -1 | awk '{print $5}') used)"
   else
     info "Step 2: Setting up loopback LFS filesystem"
-    
+
     # Try remount first
-    if [ -f ~/lfs-disk.img ]; then
-      info "Disk image exists at ~/lfs-disk.img, attempting remount..."
+    if [ -f "$LFS_IMG" ]; then
+      info "Disk image exists at $LFS_IMG, attempting remount..."
       run_cmd bash "$SCRIPT_DIR/remount-lfs.sh"
     else
-      info "No disk image found at ~/lfs-disk.img. Creating new loopback image..."
+      info "No disk image found at $LFS_IMG. Creating new loopback image..."
       run_cmd bash "$SCRIPT_DIR/lfs-loopback-setup.sh"
     fi
-    
+
     # Verify mount
     if ! check_mount_point "$LFS"; then
       err "Failed to mount $LFS — check logs or run setup manually"
@@ -177,6 +179,7 @@ else
   info "Skipping loopback setup (--skip-loopback)"
   export LFS=/mnt/lfs
 fi
+
 
 # ============================================================================
 # Step 3: Run preflight checks

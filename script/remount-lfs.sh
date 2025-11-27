@@ -6,9 +6,9 @@
 set -e
 
 # === CONFIG ===
-LFS_IMG=~/lfs-disk.img
+LFS_IMG=/root/lfs-root.img
 MOUNT_POINT=/mnt/lfs
-SWAPFILE=$MOUNT_POINT/swapfile
+SWAPFILE=/root/lfs-swap.img
 LOG=~/LFS/remount.log
 
 # === Ensure log directory exists ===
@@ -35,12 +35,20 @@ echo "✅ Mounted at $MOUNT_POINT" | tee -a "$LOG"
 
 # === Enable swap ===
 if [ -f "$SWAPFILE" ]; then
-  echo "💾 Enabling swapfile..." | tee -a "$LOG"
-  sudo swapon "$SWAPFILE"
-  echo "✅ Swapfile enabled" | tee -a "$LOG"
+  echo "💾 Checking swap status for $SWAPFILE..." | tee -a "$LOG"
+  if sudo swapon --show | grep -q "$SWAPFILE"; then
+    echo "✅ Swapfile already enabled" | tee -a "$LOG"
+  else
+    echo "💾 Enabling swapfile..." | tee -a "$LOG"
+    sudo swapon "$SWAPFILE"
+    if sudo swapon --show | grep -q "$SWAPFILE"; then
+      echo "✅ Swapfile enabled successfully" | tee -a "$LOG"
+    else
+      echo "❌ Failed to enable swapfile $SWAPFILE" | tee -a "$LOG"
+    fi
+  fi
 else
   echo "⚠️ Swapfile not found at $SWAPFILE" | tee -a "$LOG"
-fi
 
 # === Set environment ===
 export LFS="$MOUNT_POINT"
