@@ -49,6 +49,7 @@ if [ -f "$SWAPFILE" ]; then
   fi
 else
   echo "⚠️ Swapfile not found at $SWAPFILE" | tee -a "$LOG"
+fi
 
 # === Set environment ===
 export LFS="$MOUNT_POINT"

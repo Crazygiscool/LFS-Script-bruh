@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Auto-build all tarballs in $LFS/sources with special-case support, live logging, and build verification
+# Auto-build all tarballs in $LFS/sources with special-case support, live logging, build verification, and error suggestions
 # Author: Crazygiscool
 
 set -e
@@ -58,6 +58,35 @@ handle_libstdcpp() {
     --with-gxx-include-dir=$LFS/tools/$TARGET/include/c++/13.2.0
 }
 
+# === Error Suggestions ===
+suggest_fix() {
+  local stage="$1"
+  local pkg="$2"
+  echo "💡 Suggestions for $pkg ($stage failure):"
+  case "$stage" in
+    archive)
+      echo "   • Archive may be corrupted or incomplete."
+      echo "   • Delete and re-fetch: rm -f $SRCROOT/${pkg}.tar.* && rerun fetch."
+      echo "   • Verify checksum against official source."
+      ;;
+    configure)
+      echo "   • Check $LOGROOT/$pkg/configure.log for missing dependencies or wrong flags."
+      echo "   • Verify required tools (gcc, make, bash, etc.) are installed and in PATH."
+      echo "   • Ensure correct --prefix and --host/--target values for cross-compilation."
+      ;;
+    make)
+      echo "   • Inspect $LOGROOT/$pkg/make.log for compiler errors."
+      echo "   • Check disk space and memory availability."
+      echo "   • Try rebuilding with fewer jobs: make -j1"
+      ;;
+    install)
+      echo "   • Review $LOGROOT/$pkg/install.log for permission issues."
+      echo "   • Ensure $LFS/tools or $LFS/usr is writable by the lfs user."
+      echo "   • Check if previous steps installed required headers/libraries."
+      ;;
+  esac
+}
+
 # === Build Loop ===
 
 for archive in "$SRCROOT"/*.tar.*; do
@@ -78,7 +107,21 @@ for archive in "$SRCROOT"/*.tar.*; do
   rm -rf "$srcdir" "$builddir"
   mkdir -pv "$logdir"
 
-  tar -xf "$archive" -C "$SRCROOT"
+  # === Check archive integrity before extraction ===
+  if ! tar -tf "$archive" &>/dev/null; then
+    echo "❌ Archive appears corrupted: $archive"
+    suggest_fix archive "$pkg"
+    echo "[$(date)] $pkg | ERROR (archive)" >> "$MANIFEST"
+    continue
+  fi
+
+  tar -xf "$archive" -C "$SRCROOT" || {
+    echo "❌ Extraction failed for $pkg"
+    suggest_fix archive "$pkg"
+    echo "[$(date)] $pkg | ERROR (extract)" >> "$MANIFEST"
+    continue
+  }
+
   cd "$srcdir"
 
   env > "$logdir/env.txt"
@@ -108,6 +151,7 @@ for archive in "$SRCROOT"/*.tar.*; do
       mkdir -v build && cd build
       ../configure --prefix=$LFS/tools 2>&1 | tee "$logdir/configure.log" || {
         echo "⚠️ Configure failed for $pkg — skipping"
+        suggest_fix configure "$pkg"
         echo "[$(date)] $pkg | ERROR (configure)" >> "$MANIFEST"
         continue
       }
@@ -116,12 +160,14 @@ for archive in "$SRCROOT"/*.tar.*; do
 
   make -j"$NPROC" 2>&1 | tee "$logdir/make.log" || {
     echo "⚠️ Make failed for $pkg — skipping"
+    suggest_fix make "$pkg"
     echo "[$(date)] $pkg | ERROR (make)" >> "$MANIFEST"
     continue
   }
 
   make install 2>&1 | tee "$logdir/install.log" || {
     echo "⚠️ Install failed for $pkg — skipping"
+    suggest_fix install "$pkg"
     echo "[$(date)] $pkg | ERROR (install)" >> "$MANIFEST"
     continue
   }
@@ -145,4 +191,4 @@ for archive in "$SRCROOT"/*.tar.*; do
   fi
 done
 
-echo "🎉 All packages processed with build verification and manifest tracking."
+echo "🎉 All packages processed with build verification, corruption checks, and error suggestions."
