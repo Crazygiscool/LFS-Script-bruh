@@ -1,4 +1,4 @@
-=== Build Automation Started: Fri Nov 28 10:39:23 PM EST 2025 ===
+=== Build Automation Started: Sat Nov 29 03:03:08 PM EST 2025 ===
 [INFO] Step 1: Creating/verifying lfs user
 [INFO] User 'lfs' already exists (uid: 1001)
 [INFO] Sudoers file for lfs already exists
@@ -8,3 +8,16 @@
 [INFO] Step 4: Skipping fetch (--skip-fetch)
 [INFO] Step 5: Running auto-build (all packages in /mnt/lfs/sources)
 + bash /home/crazyg/Documents/code/REMOVED-OS/script/auto-build.sh
+[INFO] Step 6: Running post-build verification
+[WARN] verify-toolchain.sh not found or not executable — skipping
+[WARN] verify-glibc.sh not found or not executable — skipping
+=== Build Automation Completed: Sat Nov 29 03:03:27 PM EST 2025 ===
+[INFO] 
+[INFO] ✅ Automation complete!
+[INFO] Log file: /home/crazyg/Documents/code/REMOVED-OS/script/build-automation.log
+[INFO] 
+[INFO] Next steps (as lfs user):
+[INFO]   su - lfs
+[INFO]   cd /mnt/lfs/sources
+[INFO]   # Run build-* scripts or auto-build
+[INFO] 
