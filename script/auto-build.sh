@@ -91,8 +91,6 @@ suggest_fix() {
 
 for archive in "$SRCROOT"/*.tar.*; do
   pkg=$(basename "$archive" | sed -E 's/\.tar\..*//')
-  srcdir="$SRCROOT/$pkg"
-  builddir="$srcdir/build"
   logdir="$LOGROOT/$pkg"
 
   echo "🔧 Building $pkg..."
@@ -104,7 +102,7 @@ for archive in "$SRCROOT"/*.tar.*; do
     continue
   fi
 
-  rm -rf "$srcdir" "$builddir"
+  rm -rf "$SRCROOT/$pkg"
   mkdir -pv "$logdir"
 
   # === Check archive integrity before extraction ===
@@ -121,6 +119,10 @@ for archive in "$SRCROOT"/*.tar.*; do
     echo "[$(date)] $pkg | ERROR (extract)" >> "$MANIFEST"
     continue
   }
+
+  # Dynamically detect extracted directory
+  extracted_dir=$(tar -tf "$archive" | head -1 | cut -f1 -d"/")
+  srcdir="$SRCROOT/$extracted_dir"
 
   cd "$srcdir"
 
@@ -191,4 +193,4 @@ for archive in "$SRCROOT"/*.tar.*; do
   fi
 done
 
-echo "🎉 All packages processed with build verification, corruption checks, and error suggestions."
+echo "🎉 All packages processed with build verification, corruption checks, dynamic directory detection, and error suggestions."
