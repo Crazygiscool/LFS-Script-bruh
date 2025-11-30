@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Auto-build all tarballs in $LFS/sources with special-case support, live logging, build verification, and error suggestions
+# Auto-build all tarballs in $LFS/sources with live logging, build verification, and error suggestions
 # Author: Crazygiscool
 
 set -e
@@ -15,7 +15,7 @@ export TARGET=$(uname -m)-lfs-linux-gnu
 mkdir -pv "$LOGROOT"
 echo "📋 Build Manifest — $(date)" > "$MANIFEST"
 
-# === Special Package Handlers ===
+# === Special Package Handlers (still defined, but skipped in loop) ===
 
 handle_binutils() {
   mkdir -v build && cd build
@@ -103,6 +103,14 @@ for archive in "$SRCROOT"/*.tar.*; do
     continue
   fi
 
+  # Skip packages handled manually
+  case "$pkg" in
+    binutils-*|gcc-*|glibc-*|libstdc++-*)
+      echo "⏩ Skipping $pkg (handled by dedicated script)" | tee -a "$MANIFEST"
+      continue
+      ;;
+  esac
+
   rm -rf "$srcdir"
   mkdir -pv "$srcdir" "$logdir"
 
@@ -127,25 +135,13 @@ for archive in "$SRCROOT"/*.tar.*; do
   env > "$logdir/env.txt"
   date > "$logdir/start.txt"
 
-  # Special cases
+  # Special case: Linux headers still built here
   case "$pkg" in
-    binutils-*)
-      handle_binutils 2>&1 | tee "$logdir/configure.log"
-      ;;
-    gcc-*)
-      handle_gcc 2>&1 | tee "$logdir/configure.log"
-      ;;
     linux-*)
       handle_linux 2>&1 | tee "$logdir/headers.log"
       echo "✅ Installed Linux headers"
       echo "[$(date)] $pkg | DONE (headers only)" >> "$MANIFEST"
       continue
-      ;;
-    glibc-*)
-      handle_glibc 2>&1 | tee "$logdir/configure.log"
-      ;;
-    libstdc++-*)
-      handle_libstdcpp 2>&1 | tee "$logdir/configure.log"
       ;;
     *)
       mkdir -v build && cd build
@@ -190,6 +186,5 @@ for archive in "$SRCROOT"/*.tar.*; do
     echo "[$(date)] $pkg | PARTIAL" >> "$MANIFEST"
   fi
 done
-
 
 echo "🎉 All packages processed with build verification, corruption checks, dynamic directory detection, and error suggestions."
