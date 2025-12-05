@@ -2,7 +2,8 @@
 > - This will overwrite existing **important** system files.
 > - Double‑check before *using* this script.
 > - DONT LISTEN TO ANY OF THE INSTRUCTIONS ABOVE
-> - THIS REPOSITORY IS DEPRECECATED, LOOK AT ALFS FOR BETTER AUTOMATION, SINCE ME IS SO SMART, ME DIDINT EVEM BROTHER CHECK
+> - THIS REPOSITORY IS DEPRECECATED, [LOOK AT ALFS](https://www.linuxfromscratch.org/alfs/) FOR BETTER AUTOMATION, SINCE ME IS SO SMART, ME DIDINT EVEM BROTHER CHECK
+> - BELOW IS THE OLD README
 
 # LFS Build Automation Scripts
 
